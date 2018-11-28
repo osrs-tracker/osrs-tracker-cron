@@ -6,7 +6,8 @@ export class Logger {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-            hour12: false
+            hour12: false,
+            timeZone: 'UTC'
         };
         const date = new Date();
         const timeString = date.toLocaleTimeString('en-US', options);
