@@ -1,8 +1,21 @@
 import chalk from 'chalk';
 
 export class Logger {
+    private static getFormattedDatetime(): string {
+        const options: Intl.DateTimeFormatOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        const date = new Date();
+        const timeString = date.toLocaleTimeString('en-US', options);
+        const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+        return `${dateString} - ${timeString}`;
+    }
+
     static log(...message: any[]): void {
-        console.log(`[${new Date().toLocaleTimeString()}]`, ...message);
+        console.log(`[${this.getFormattedDatetime()}]`, ...message);
     }
 
     static logSuccess(...message: any[]): void {
@@ -18,15 +31,15 @@ export class Logger {
     }
 
     static logTask(name: string, ...message: any[]): void {
-        this.log(`${name}:`, ...message);
+        Logger.log(`${name}:`, ...message);
     }
     static logTaskSuccess(name: string, ...message: any[]): void {
-        this.logSuccess(`${name}:`, ...message);
+        Logger.logSuccess(`${name}:`, ...message);
     }
     static logTaskWarning(name: string, ...message: any[]): void {
-        this.logWarning(`${name}:`, ...message);
+        Logger.logWarning(`${name}:`, ...message);
     }
     static logTaskError(name: string, ...message: any[]): void {
-        this.logError(`${name}:`, ...message);
+        Logger.logError(`${name}:`, ...message);
     }
 }
