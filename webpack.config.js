@@ -4,20 +4,21 @@ const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const Visualizer = require('webpack-visualizer-plugin');
 
+const packageJson = require('./package.json');
 
 module.exports = env => {
   const config = {
     entry: ['./src/main.ts'],
     mode: env.mode,
     target: 'node',
+    devtool: false,
     node: {
-      __dirname: false,
-      __filename: false,
+      __dirname: false, // Fix for native node __dirname
+      __filename: false // Fix for native node __filename
     },
     output: {
-      filename: 'osrs-tracker-cron.js',
+      filename: packageJson.name + '.js',
       path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
@@ -25,8 +26,7 @@ module.exports = env => {
       modules: ['node_modules', 'src']
     },
     stats: {
-      colors: true,
-      modules: false,
+      modules: false, // We don't need to see this
       warningsFilter: /^(?!CriticalDependenciesWarning$)/
     },
     optimization: {
@@ -43,22 +43,26 @@ module.exports = env => {
       rules: [
         {
           test: /\.ts$/,
-          use: 'ts-loader',
-          exclude: /node_modules/,
+          use: 'ts-loader'
         }
       ]
     },
     plugins: [
       new CleanWebpackPlugin(['./dist']),
       new webpack.DefinePlugin({
-        VERSION: JSON.stringify(require('./package.json').version),
+        VERSION: JSON.stringify(packageJson.version),
         DEVELOP: env.mode === 'development'
       }),
       new webpack.NormalModuleReplacementPlugin(/config.ts/, env.mode === 'production' ? 'config.ts' : 'config.hidden.ts')
     ],
   };
 
-  if (env.visualise) config.plugins.push(new Visualizer());
+  if (env.analyse) {
+    const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+    config.plugins.push(new BundleAnalyzerPlugin({
+      analyzerMode: 'static' // Generates file instead of starting a web server
+    }));
+  }
 
   return config;
 };

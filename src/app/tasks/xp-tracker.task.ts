@@ -11,7 +11,7 @@ export class XpTrackerTask {
   private readonly FETCH_DELAY = 500;
 
   private failedPlayers: DbPlayer[] = [];
-  private startTime: number;
+  private startTime: number = -1;
 
   static runTask(): void {
     return new XpTrackerTask().runTask();
@@ -27,7 +27,7 @@ export class XpTrackerTask {
           Logger.logTask('XP_TRACKER', 'FAILED TO RETRIEVE PLAYERS - RESTARTING IN 5 MINUTES');
           setTimeout(() => this.runTask(), 5 * 60 * 1000);
         } else {
-          this.fetchPlayerData(result.players);
+          this.fetchPlayerData(result.players!);
         }
       })
     );
@@ -36,13 +36,15 @@ export class XpTrackerTask {
   private fetchPlayerData(players: DbPlayer[]): void {
     this.failedPlayers = [];
     Promise.all(players.map((player, index) =>
-      new Promise(resolve => setTimeout(() => { resolve(this.lookupDbPlayer(player)); }, index * this.FETCH_DELAY))
-    )).then((datapoints: XpDatapoint[]) => this.insertDatapointsAsChunks(datapoints.filter(datapoint => datapoint !== undefined)));
+      new Promise<XpDatapoint | void>(resolve => setTimeout(() => { resolve(this.lookupDbPlayer(player)); }, index * this.FETCH_DELAY))
+    )).then((datapoints: (XpDatapoint | void)[]) =>
+      this.insertDatapointsAsChunks(datapoints.filter(datapoint => datapoint !== undefined) as XpDatapoint[])
+    );
   }
 
   private lookupDbPlayer(player: DbPlayer): Promise<XpDatapoint | void> {
     return fetch(this.HISCORE_URL + player.username)
-      .then(res => res.ok ? res.text() : null)
+      .then(res => res.ok ? res.text() : Promise.resolve(null))
       .then(xpString => {
         if (!xpString) {
           return undefined; // player not found (no player with that name)

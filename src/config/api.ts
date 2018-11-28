@@ -34,7 +34,7 @@ export class API {
         Logger.logError('FAILED TO SETUP DATABASE CONNECTION.', err);
         return null;
       })
-      .then((connection: PoolConnection) => {
+      .then((connection: PoolConnection | null) => {
         if (!connection) return;
         return dbConnectionLogic(connection)
           .then(() => connection.release())

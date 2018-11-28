@@ -9,7 +9,7 @@ export class OsrsDbuTask {
   private readonly FETCH_INTERVAL = 6500;
 
   private categories: { letter: string, items: number }[] = [];
-  private startTime: number;
+  private startTime: number = -1;
 
   static runTask(): void {
     return new OsrsDbuTask().runTask();
@@ -35,7 +35,7 @@ export class OsrsDbuTask {
     const category = this.categories[categoryIndex];
     const pages = 1 + (category.items - (category.items % 12)) / 12;
 
-    Promise.all([...new Array(pages)].map((el: undefined, index: number) => new Promise(
+    Promise.all([...new Array(pages)].map((_: undefined, index: number) => new Promise<Item[]>(
       resolve => setTimeout(() => { resolve(this.getPageItems(category, pages - index)); }, this.FETCH_INTERVAL * (index + 1))
     ))).then((itemCollections: Item[][]) => {
       const items = itemCollections.reduce((a: Item[], b: Item[]) => a.concat(b));
