@@ -6,9 +6,9 @@ import { XpQueuePlayers } from './tasks/xp-queue-players.task';
 
 export class Tasks {
   static init(): void {
-    this.startJob('0 0 */2 * * *' /* Every two hours */, OsrsQueueDbu.runTask); // QUEUE ALL ITEMS FOR XP TRACKING
+    this.startJob('0 0 */2 * * *' /* Every two hours */, OsrsQueueDbu.runTask); // QUEUE ALL ITEMS FOR PRICE TRACKING
     this.startJob('0 0 0 * * *' /* At UTC midnight */, XpQueuePlayers.runTask); // QUEUE ALL PLAYERS FOR XP TRACKING
-    this.startJob('0 * * * * *' /* Every minute */, OsrsProcessDbu.runTask); // PROCESS ALL ITEMS FOR XP TRACKING
+    this.startJob('0 * * * * *' /* Every minute */, OsrsProcessDbu.runTask); // PROCESS ALL ITEMS FOR PRICE TRACKING
     this.startJob('0 * * * * *' /* Every minute */, XpProcessPlayers.runTask); // PROCESS PLAYERS FOR XP DATAPOINTS
   }
 
