@@ -34,21 +34,21 @@ export class XpProcessPlayers {
   async runTask(): Promise<void> {
     this.startTime = Date.now();
 
-    await this.processPlayers();
-  }
-
-  async processPlayers(): Promise<void> {
-    const players = await this.fetchPlayers();
+    const players = await this.popPlayers();
 
     if (players.length === 0) return;
 
+    await this.processPlayers(players);
+  }
+
+  async processPlayers(players: QueuedPlayer[]): Promise<void> {
     Logger.logTask('PROCESS_XP_TRACKER', `${players.length} PLAYERS WAITING TO BE PROCESSED`);
 
-    const lookupPromises: Promise<XpDatapoint | void>[] = [];
+    const lookupPromises: Promise<XpDatapoint | undefined>[] = [];
 
     for (let i = 0; i < players.length; i++) {
       lookupPromises.push(
-        new Promise<XpDatapoint | void>(resolve => setTimeout(() => resolve(), i * this.REQUEST_DELAY)).then(() =>
+        new Promise<XpDatapoint | undefined>(resolve => setTimeout(() => resolve(), i * this.REQUEST_DELAY)).then(() =>
           this.lookupDbPlayer(players[i])
         )
       );
@@ -80,7 +80,7 @@ export class XpProcessPlayers {
     });
   }
 
-  private async fetchPlayers(): Promise<QueuedPlayer[]> {
+  private async popPlayers(): Promise<QueuedPlayer[]> {
     const res = await fetch(`${config.toxMqUrl}-xp/pop/100`, { method: 'POST' });
 
     if (res.status === 204) return [];
@@ -89,12 +89,15 @@ export class XpProcessPlayers {
     return players.map((player: { _id: string; payload: any }) => ({ ...player.payload, _id: player._id }));
   }
 
-  private async lookupDbPlayer(player: QueuedPlayer): Promise<XpDatapoint | void> {
+  private async lookupDbPlayer(player: QueuedPlayer): Promise<XpDatapoint | undefined> {
     const fetchedXp = await fetch(this.OSRS_HISCORE_URL + player.username, {
       agent: XpProcessPlayers.PROCESSING_AGENT,
     })
-      .then(res => (res.ok ? res.text() : Promise.resolve(null)))
-      .catch(() => Logger.logTaskError('PROCESS_XP_TRACKER', `FAILED TO LOOKUP ${player.username}`));
+      .then(res => (res.ok ? res.text() : Promise.reject()))
+      .catch(() => {
+        Logger.logTask('PROCESS_XP_TRACKER', `FAILED TO LOOKUP ${player.username}`);
+        return undefined;
+      });
 
     if (fetchedXp && fetchedXp.length < 1024) {
       return {

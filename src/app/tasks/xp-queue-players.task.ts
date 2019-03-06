@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import fetch, { Response } from 'node-fetch';
+import fetch from 'node-fetch';
 import { MD5 } from 'object-hash';
 import { API } from '../../config/api';
 import { config } from '../../config/config';
@@ -13,10 +13,10 @@ export class XpQueuePlayers {
   }
 
   async runTask(): Promise<void> {
-    await this.postPlayers();
+    await this.queuePlayers();
   }
 
-  private async postPlayers(): Promise<void> {
+  private async queuePlayers(): Promise<void> {
     return API.getDbConnection(async connection => {
       const { statusCode, players } = await PlayerRepository.getPlayers(connection);
 
@@ -32,7 +32,7 @@ export class XpQueuePlayers {
     });
   }
 
-  private async queueInsert(payload: any): Promise<Response> {
+  private async queueInsert(payload: any): Promise<void> {
     const utcToday = moment()
       .utc()
       .startOf('day')
@@ -42,6 +42,6 @@ export class XpQueuePlayers {
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
       body: JSON.stringify(payload),
-    }).then();
+    }).then(() => undefined);
   }
 }
