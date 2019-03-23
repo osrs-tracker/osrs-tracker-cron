@@ -15,9 +15,19 @@ export class Logger {
       hour12: false,
       timeZone: 'UTC',
     };
+
     const date = new Date();
     const timeString = date.toLocaleTimeString('en-US', options);
-    const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+
+    const year = date.getUTCFullYear();
+    const month = this.prependZeroIfNecessairy(date.getUTCMonth() + 1);
+    const day = this.prependZeroIfNecessairy(date.getUTCDate());
+    const dateString = `${year}/${month}/${day}`;
+
     return includeDate ? `${dateString} ${timeString}` : timeString;
+  }
+
+  private static prependZeroIfNecessairy(number: number): string {
+    return (number < 10 ? '0' : '') + number;
   }
 }
