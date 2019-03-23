@@ -1,5 +1,5 @@
 import cluster from 'cluster';
-
+import { startHealthCheckServer } from './app/common/health-server';
 import { Logger } from './app/common/logger';
 import { Tasks } from './app/tasks';
 
@@ -13,5 +13,6 @@ if (cluster.isMaster) {
   });
 } else {
   Logger.log(`WORKER ${cluster.worker.id} CREATED - INITIALISING TASKS`);
-  Tasks.init();
+  Tasks.start();
+  startHealthCheckServer();
 }
