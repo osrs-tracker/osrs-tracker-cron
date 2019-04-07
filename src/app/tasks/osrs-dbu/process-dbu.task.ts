@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
-import { API } from '../../config/api';
-import { config } from '../../config/config';
-import { Logger } from '../common/logger';
-import { Item } from '../data/item';
-import { ItemRepository } from '../repositories/item.repository';
+import { API } from '../../../config/api';
+import { config } from '../../../config/config';
+import { Logger } from '../../common/logger';
+import { Item } from '../../data/item';
+import { ItemRepository } from '../../repositories/item.repository';
 
 interface QueuedCategoryPage {
   _id: string; // message ID

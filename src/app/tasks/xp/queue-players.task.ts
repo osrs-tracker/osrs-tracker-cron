@@ -1,11 +1,11 @@
 import * as moment from 'moment';
 import fetch from 'node-fetch';
 import { MD5 } from 'object-hash';
-import { API } from '../../config/api';
-import { config } from '../../config/config';
-import { ArrayUtils } from '../common/array-utils';
-import { Logger } from '../common/logger';
-import { PlayerRepository } from '../repositories/player.repository';
+import { API } from '../../../config/api';
+import { config } from '../../../config/config';
+import { ArrayUtils } from '../../common/array-utils';
+import { Logger } from '../../common/logger';
+import { PlayerRepository } from '../../repositories/player.repository';
 
 export class XpQueuePlayers {
   static runTask(): Promise<void> {

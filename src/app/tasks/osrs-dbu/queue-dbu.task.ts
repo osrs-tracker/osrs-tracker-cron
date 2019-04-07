@@ -1,8 +1,8 @@
 import moment from 'moment';
 import fetch from 'node-fetch';
 import { MD5 } from 'object-hash';
-import { config } from '../../config/config';
-import { Logger } from '../common/logger';
+import { config } from '../../../config/config';
+import { Logger } from '../../common/logger';
 
 export class OsrsQueueDbu {
   private readonly OSRSRS_ITEM_API_BASE = 'http://services.runescape.com/m=itemdb_oldschool/api/catalogue';

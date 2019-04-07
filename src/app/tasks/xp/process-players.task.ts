@@ -1,11 +1,11 @@
 import { Agent, AgentOptions } from 'https';
 import moment from 'moment';
 import fetch from 'node-fetch';
-import { API } from '../../config/api';
-import { config } from '../../config/config';
-import { Logger } from '../common/logger';
-import { XpDatapoint } from '../data/xp-datapoint';
-import { XpRepository } from '../repositories/xp.repository';
+import { API } from '../../../config/api';
+import { config } from '../../../config/config';
+import { Logger } from '../../common/logger';
+import { XpDatapoint } from '../../data/xp-datapoint';
+import { XpRepository } from '../../repositories/xp.repository';
 
 interface QueuedPlayer {
   _id: string; // message ID
