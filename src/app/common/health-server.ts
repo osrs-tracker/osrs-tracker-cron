@@ -12,7 +12,7 @@ export function startHealthCheckServer(): void {
         return;
       }
       const tasksRunning =
-        Tasks.runningTasks.length === Tasks.TASK_COUNT && Tasks.runningTasks.reduce((a, b) => a && b.running!, true);
+        Tasks.runningTasks.length === Tasks.TASKS.length && Tasks.runningTasks.reduce((a, b) => a && b.running!, true);
 
       await API.getDbConnection(connection =>
         HealthRepository.checkConnection(connection).then(result => {

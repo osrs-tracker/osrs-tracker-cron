@@ -6,7 +6,13 @@ import { XpProcessPlayers } from './tasks/xp/process-players.task';
 import { XpQueuePlayers } from './tasks/xp/queue-players.task';
 
 export class Tasks {
-  static readonly TASK_COUNT = 4;
+  static readonly TASKS = [
+    { cron: '0 0 * * * *' /* Every hour */, function: XpCleanDead.runTask }, // CLEAD DEAD PLAYERS FROM XP TRACKING
+    { cron: '0 0 */2 * * *' /* Every two hours */, function: OsrsQueueDbu.runTask }, // QUEUE ALL ITEMS FOR PRICE TRACKING
+    { cron: '0 0 0 * * *' /* At UTC midnight */, function: XpQueuePlayers.runTask }, // QUEUE ALL PLAYERS FOR XP TRACKING
+    { cron: '0 * * * * *' /* Every minute */, function: OsrsProcessDbu.runTask }, // PROCESS ALL ITEMS FOR PRICE TRACKING
+    { cron: '0 * * * * *' /* Every minute */, function: XpProcessPlayers.runTask }, // PROCESS PLAYERS FOR XP DATAPOINTS
+  ];
   static runningTasks: CronJob[] = [];
 
   static start(stopOld: boolean = true): void {
@@ -15,17 +21,7 @@ export class Tasks {
       this.runningTasks = [];
     }
 
-    this.initJobs();
-  }
-
-  private static initJobs(): void {
-    this.startJob('0 0 * * * *' /* Every hour */, XpCleanDead.runTask); // CLEAD DEAD PLAYERS FROM XP TRACKING
-
-    this.startJob('0 0 */2 * * *' /* Every two hours */, OsrsQueueDbu.runTask); // QUEUE ALL ITEMS FOR PRICE TRACKING
-    this.startJob('0 0 0 * * *' /* At UTC midnight */, XpQueuePlayers.runTask); // QUEUE ALL PLAYERS FOR XP TRACKING
-
-    this.startJob('0 * * * * *' /* Every minute */, OsrsProcessDbu.runTask); // PROCESS ALL ITEMS FOR PRICE TRACKING
-    this.startJob('0 * * * * *' /* Every minute */, XpProcessPlayers.runTask); // PROCESS PLAYERS FOR XP DATAPOINTS
+    this.TASKS.forEach(task => this.startJob(task.cron, task.function));
   }
 
   private static startJob(cron: string, task: () => void): void {
