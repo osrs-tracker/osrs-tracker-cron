@@ -1,6 +1,6 @@
 {
   "name": "osrs-tracker-cron",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Freek Mencke",
   "homepage": "https://twitter.com/FreekMencke",
   "repository": {
@@ -9,14 +9,14 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "webpack --watch --config webpack.config.js --progress --env.mode=development && node dist/osrs-tracker-cron.js",
-    "start:prod": "webpack --watch --config webpack.config.js --progress --env.mode=production && node dist/osrs-tracker-cron.js",
-    "build:prod": "webpack --config webpack.config.js --progress --env.mode=production",
-    "build:ci": "webpack --config webpack.config.js --env.mode=production",
+    "start": "webpack --progress --env.development --env.nodemon",
+    "start:prod": "webpack --progress --env.nodemon",
+    "build:prod": "webpack --progress",
+    "build:ci": "webpack",
     "build:docker": "docker build --rm -t toxsickcoder/osrs-tracker-cron:dev .",
     "deploy:docker": "sh ./scripts/deploy.sh",
-    "analyse:dev": "webpack --config webpack.config.js --progress --env.mode=development --env.analyse && start dist/report.html",
-    "analyse:prod": "webpack --config webpack.config.js --progress --env.mode=production --env.analyse && start dist/report.html",
+    "analyse:dev": "webpack --progress --env.development --env.analyse && start dist/report.html",
+    "analyse:prod": "webpack --progress --env.analyse && start dist/report.html",
     "lint": "tslint --project ."
   },
   "dependencies": {
@@ -32,15 +32,15 @@
     "@types/node": "^10.0.0",
     "@types/node-fetch": "2.1.7",
     "@types/object-hash": "^1.2.0",
-    "clean-webpack-plugin": "^2.0.1",
+    "clean-webpack-plugin": "^2.0.2",
     "nodemon-webpack-plugin": "^4.0.8",
-    "terser-webpack-plugin": "1.2.3",
-    "ts-loader": "^5.3.3",
-    "tslint": "^5.14.0",
+    "terser-webpack-plugin": "1.2.4",
+    "ts-loader": "^6.0.0",
+    "tslint": "^5.16.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.3.4000",
-    "webpack": "^4.29.6",
-    "webpack-bundle-analyzer": "^3.1.0",
-    "webpack-cli": "^3.3.0"
+    "typescript": "^3.4.5",
+    "webpack": "^4.31.0",
+    "webpack-bundle-analyzer": "^3.3.2",
+    "webpack-cli": "^3.3.2"
   }
 }

@@ -12,5 +12,5 @@ export const config: IConfig = {
       key: readFileSync('/run/secrets/db-client-key.pem'),
     },
   }),
-  toxMqUrl: 'http://tox-mq:8080/queue/osrs-tracker',
+  toxMqUrl: `${process.env.TOX_MQ_URL}/queue/osrs-tracker`,
 };
