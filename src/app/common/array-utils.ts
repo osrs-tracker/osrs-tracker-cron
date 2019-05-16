@@ -1,12 +1,12 @@
 export class ArrayUtils {
-  static chunk<T>(array: T[], chunkLength: number): T[][] {
-    // splits array into chunks of certain size
-    const chunks = [];
-    const arrayLength = array.length;
+  static chunk<T>(array: T[], chunkSize: number): T[][] {
+    const chunks: T[][] = [];
 
-    let i = 0;
-    while (i < arrayLength) chunks.push(array.slice(i, (i += chunkLength)));
-
+    let index = 0;
+    while (index < array.length) {
+      chunks.push(array.slice(index, index + chunkSize));
+      index += chunkSize;
+    }
     return chunks;
   }
 }

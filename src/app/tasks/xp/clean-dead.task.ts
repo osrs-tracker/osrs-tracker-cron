@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
-import { API } from '../../../config/api';
 import { config } from '../../../config/config';
 import { Logger } from '../../common/logger';
+import { SqlUtils } from '../../common/sql-utils';
 import { PlayerRepository } from '../../repositories/player.repository';
 
 interface DeadXp {
@@ -19,7 +19,7 @@ export class XpCleanDead {
     const dead = await this.fetchDead();
     const deadIds = dead.map(item => item.payload.id);
 
-    await API.getDbConnection(async connection => {
+    await SqlUtils.getDbConnection(async connection => {
       const { success } = await PlayerRepository.deletePlayers(deadIds, connection);
       if (success) await this.ackDead(dead);
     });

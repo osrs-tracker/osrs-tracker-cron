@@ -1,10 +1,10 @@
 import * as moment from 'moment';
 import fetch from 'node-fetch';
 import { MD5 } from 'object-hash';
-import { API } from '../../../config/api';
 import { config } from '../../../config/config';
 import { ArrayUtils } from '../../common/array-utils';
 import { Logger } from '../../common/logger';
+import { SqlUtils } from '../../common/sql-utils';
 import { PlayerRepository } from '../../repositories/player.repository';
 
 export class XpQueuePlayers {
@@ -17,7 +17,7 @@ export class XpQueuePlayers {
   }
 
   private async queuePlayers(): Promise<void> {
-    return API.getDbConnection(async connection => {
+    return SqlUtils.getDbConnection(async connection => {
       const { statusCode, players } = await PlayerRepository.getPlayers(connection);
 
       if (statusCode === 500) {

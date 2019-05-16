@@ -56,7 +56,7 @@ module.exports = (env = {}) => {
       // Use module replacement to use different configs for dev and prod
       new webpack.NormalModuleReplacementPlugin(
         /[\\/]src[\\/]config[\\/]config.ts$/, // [\\/] works on all operating systems.
-        env.development ? 'config.hidden.ts' : 'config.ts'
+        env.development ? 'config.dev.ts' : 'config.ts'
       ),
     ],
   };

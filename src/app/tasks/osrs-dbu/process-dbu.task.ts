@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
-import { API } from '../../../config/api';
 import { config } from '../../../config/config';
 import { Logger } from '../../common/logger';
+import { SqlUtils } from '../../common/sql-utils';
 import { Item } from '../../data/item';
 import { ItemRepository } from '../../repositories/item.repository';
 
@@ -37,15 +37,20 @@ export class OsrsProcessDbu {
   }
 
   private async popCategoryPages(): Promise<QueuedCategoryPage[]> {
-    const res = await fetch(`${config.toxMqUrl}-dbu/pop/9`, { method: 'POST' });
+    try {
+      const res = await fetch(`${config.toxMqUrl}-dbu/pop/9`, { method: 'POST' });
 
-    if (res.status === 204) return [];
-    const response = await res.json();
+      if (res.status === 204) return [];
+      const response = await res.json();
 
-    return response.map((msg: { payload: QueuedCategoryPage; _id: string }) => ({
-      _id: msg._id,
-      ...msg.payload,
-    }));
+      return response.map((msg: { payload: QueuedCategoryPage; _id: string }) => ({
+        _id: msg._id,
+        ...msg.payload,
+      }));
+    } catch (e) {
+      Logger.logTask('PROCESS_OSRS_DBU', 'FAILED TO POP CATEGORY PAGES:', e.message);
+    }
+    return [];
   }
 
   private async processCategoryPages(categoryPages: QueuedCategoryPage[]): Promise<void> {
@@ -71,7 +76,7 @@ export class OsrsProcessDbu {
 
     Logger.logTask('PROCESS_OSRS_DBU', `INSERTING ${items.length} ITEMS FROM ${succeededResponses.length} PAGES`);
 
-    await API.getDbConnection(connection => ItemRepository.insertItems(items, connection));
+    await SqlUtils.getDbConnection(connection => ItemRepository.insertItems(items, connection));
     await this.ackPlayers(succeededResponses);
 
     Logger.logTask('PROCESS_OSRS_DBU', `FINISHED TASK IN ${Math.round((Date.now() - this.startTime) / 1000)} SECONDS`);
