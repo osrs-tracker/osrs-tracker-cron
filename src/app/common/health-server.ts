@@ -1,7 +1,7 @@
 import http from 'http';
-import { API } from '../../config/api';
 import { HealthRepository } from '../repositories/health.repository';
 import { Tasks } from '../tasks';
+import { SqlUtils } from './sql-utils';
 
 export function startHealthCheckServer(): void {
   http
@@ -14,7 +14,7 @@ export function startHealthCheckServer(): void {
       const tasksRunning =
         Tasks.runningTasks.length === Tasks.TASKS.length && Tasks.runningTasks.reduce((a, b) => a && b.running!, true);
 
-      await API.getDbConnection(connection =>
+      await SqlUtils.getDbConnection(connection =>
         HealthRepository.checkConnection(connection).then(result => {
           const mysqlConnectionHealthy = result.success;
 

@@ -1,9 +1,9 @@
 import { Agent, AgentOptions } from 'https';
 import moment from 'moment';
 import fetch from 'node-fetch';
-import { API } from '../../../config/api';
 import { config } from '../../../config/config';
 import { Logger } from '../../common/logger';
+import { SqlUtils } from '../../common/sql-utils';
 import { XpDatapoint } from '../../data/xp-datapoint';
 import { XpRepository } from '../../repositories/xp.repository';
 
@@ -60,7 +60,7 @@ export class XpProcessPlayers {
     );
 
     Logger.logTask('PROCESS_XP_TRACKER', `INSERTING ${datapoints.length} OF ${players.length} DATAPOINTS`);
-    await API.getDbConnection(connection => XpRepository.insertXpDataPoints(datapoints, connection));
+    await SqlUtils.getDbConnection(connection => XpRepository.insertXpDataPoints(datapoints, connection));
     await this.ackPlayers(players, datapoints);
 
     Logger.logTask(
@@ -81,12 +81,17 @@ export class XpProcessPlayers {
   }
 
   private async popPlayers(): Promise<QueuedPlayer[]> {
-    const res = await fetch(`${config.toxMqUrl}-xp/pop/100`, { method: 'POST' });
+    try {
+      const res = await fetch(`${config.toxMqUrl}-xp/pop/100`, { method: 'POST' });
+      if (res.status === 204) return [];
 
-    if (res.status === 204) return [];
-    const players = await res.json();
+      const players = await res.json();
 
-    return players.map((player: { _id: string; payload: any }) => ({ ...player.payload, _id: player._id }));
+      return players.map((player: { _id: string; payload: any }) => ({ ...player.payload, _id: player._id }));
+    } catch (e) {
+      Logger.logTask('PROCESS_XP_TRACKER', 'FAILED TO POP PLAYERS:', e.message);
+    }
+    return [];
   }
 
   private async lookupDbPlayer(player: QueuedPlayer): Promise<XpDatapoint | undefined> {
