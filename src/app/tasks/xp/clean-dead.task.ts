@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { config } from '../../../config/config';
 import { Logger } from '../../common/logger';
-import { SqlUtils } from '../../common/sql-utils';
+import { SqlUtils } from '../../common/utils/sql-utils';
 import { PlayerRepository } from '../../repositories/player.repository';
 
 interface DeadXp {

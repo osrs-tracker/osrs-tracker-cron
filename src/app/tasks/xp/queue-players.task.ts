@@ -2,9 +2,9 @@ import * as moment from 'moment';
 import fetch from 'node-fetch';
 import { MD5 } from 'object-hash';
 import { config } from '../../../config/config';
-import { ArrayUtils } from '../../common/array-utils';
 import { Logger } from '../../common/logger';
-import { SqlUtils } from '../../common/sql-utils';
+import { ArrayUtils } from '../../common/utils/array-utils';
+import { SqlUtils } from '../../common/utils/sql-utils';
 import { PlayerRepository } from '../../repositories/player.repository';
 
 export class XpQueuePlayers {

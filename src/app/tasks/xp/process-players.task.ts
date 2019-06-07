@@ -3,7 +3,7 @@ import moment from 'moment';
 import fetch from 'node-fetch';
 import { config } from '../../../config/config';
 import { Logger } from '../../common/logger';
-import { SqlUtils } from '../../common/sql-utils';
+import { SqlUtils } from '../../common/utils/sql-utils';
 import { XpDatapoint } from '../../data/xp-datapoint';
 import { XpRepository } from '../../repositories/xp.repository';
 

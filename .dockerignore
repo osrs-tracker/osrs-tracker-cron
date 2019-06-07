@@ -1,6 +1,7 @@
 dist
 node_modules
 scripts
+.dockerignore
 .editorconfig
 .gitignore
 .travis.yml

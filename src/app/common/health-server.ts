@@ -1,7 +1,7 @@
 import http from 'http';
 import { HealthRepository } from '../repositories/health.repository';
 import { Tasks } from '../tasks';
-import { SqlUtils } from './sql-utils';
+import { SqlUtils } from './utils/sql-utils';
 
 export function startHealthCheckServer(): void {
   http

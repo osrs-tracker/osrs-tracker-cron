@@ -1,6 +1,6 @@
 import { createPool, PoolConnection } from 'mysql';
-import { config } from '../../config/config';
-import { Logger } from './logger';
+import { config } from '../../../config/config';
+import { Logger } from '../logger';
 
 export class SqlUtils {
   private static readonly DB_POOL = createPool({
