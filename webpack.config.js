@@ -1,7 +1,7 @@
 'use strict';
 
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 
